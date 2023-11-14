@@ -14,8 +14,8 @@ public class LifeSimulator {
      - Implement a mechanism where an Organism consumes another (taking all its energy) when it occupies the same space.
      - Run simulation for some time, eg. when there is only one Organism left
      */
-    Organism organism = new Organism(100);
-    board.addOrganism(organism, 5, 5);
-    organism.move();
+    Organism worm = new Worm(100);
+    board.addOrganism(worm, 5, 5);
+    worm.move();
   }
 }

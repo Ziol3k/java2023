@@ -2,7 +2,7 @@ package org.life;
 
 import java.util.Random;
 
-public class Organism {
+public abstract class Organism {
 
   private int energy;
   private Position position;
