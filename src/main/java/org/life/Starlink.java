@@ -25,12 +25,12 @@ public class Starlink extends Organism {
             int newX = randomMove.getX();
             int newY = randomMove.getY();
 
-                // Starlink zużywa 3 energii podczas ruchu
+            // Starlink consumes 3 energy during movement
             energy -= 3;
             if (energy <= 0) {
                 alive = false;
-                System.out.println(name + " zdechł z powodu braku energii!");
-                board.getOrganisms()[position.getX()][position.getY()] = null; // usuń z planszy
+                System.out.println(name + " died due to lack of energy!");
+                board.getOrganisms()[position.getX()][position.getY()] = null; // remove from the board
             } else {
                 board.moveOrganism(this, newX, newY);
             }
@@ -71,6 +71,6 @@ public class Starlink extends Organism {
 
     private boolean isValidMove(Board board, int x, int y) {
         return x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight()
-                && (x != position.getX() || y != position.getY()); // nie chcemy tego samego miejsca
+                && (x != position.getX() || y != position.getY()); // we don't want the same position
     }
 }

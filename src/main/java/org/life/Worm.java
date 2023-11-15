@@ -17,17 +17,17 @@ public class Worm extends Organism {
     public void move(Board board) {
         List<Position> validMoves = getValidMoves(board);
 
-        // Wybierz losowy ruch
+        // Choose a random move
         Position randomMove = validMoves.get(random.nextInt(validMoves.size()));
         int newX = randomMove.getX();
         int newY = randomMove.getY();
 
-        // Worm zużywa 1 energii podczas ruchu
+        // Worm consumes 1 energy during movement
         energy -= 1;
         if (energy <= 0) {
             alive = false;
-            System.out.println(name + " zdechł z powodu braku energii!");
-            board.getOrganisms()[position.getX()][position.getY()] = null; // usuń z planszy
+            System.out.println(name + " died due to lack of energy!");
+            board.getOrganisms()[position.getX()][position.getY()] = null; // remove from the board
         } else {
             board.moveOrganism(this, newX, newY);
         }
@@ -52,6 +52,6 @@ public class Worm extends Organism {
 
     private boolean isValidMove(Board board, int x, int y) {
         return x >= 0 && x < board.getWidth() && y >= 0 && y < board.getHeight()
-                && (x != position.getX() || y != position.getY()); // nie chcemy tego samego miejsca
+                && (x != position.getX() || y != position.getY()); // we don't want the same position
     }
 }
