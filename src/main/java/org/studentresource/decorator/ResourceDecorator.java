@@ -1,14 +1,33 @@
+// ResourceDecorator.java
 package org.studentresource.decorator;
 
 import org.studentresource.StudentResource;
 
-public abstract class ResourceDecorator implements StudentResource {
+// Base class for resource decorators.
+public class ResourceDecorator implements StudentResource {
+
+    // Decorated resource.
     protected StudentResource decoratedResource;
 
+    // Constructor.
     public ResourceDecorator(StudentResource decoratedResource) {
         this.decoratedResource = decoratedResource;
     }
 
-    // Implement all necessary methods from StudentResource
-    // Override methods to add additional behaviors
+    // Overrides to provide access to the decorated resource.
+    @Override
+    public String getId() {
+        return decoratedResource.getId();
+    }
+
+    // Overrides to provide access to the decorated resource.
+    @Override
+    public String getName() {
+        return decoratedResource.getName();
+    }
+
+    // Gets the decorated resource.
+    public StudentResource getDecoratedResource() {
+        return decoratedResource;
+    }
 }

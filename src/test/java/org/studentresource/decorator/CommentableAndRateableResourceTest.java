@@ -1,3 +1,4 @@
+//CommentableAndRateableResourceTest.java
 package org.studentresource.decorator;
 
 import org.junit.jupiter.api.BeforeEach;
