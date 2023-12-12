@@ -1,3 +1,4 @@
+
 package org.simplestore.model;
 
 public class ProductNotFoundException extends Exception {

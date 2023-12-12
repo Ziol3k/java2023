@@ -1,15 +1,24 @@
 package org.simplestore.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Inventory {
-    // TODO: Remember of synchronization logic!
-    // There is several methods to achieve this.
     private final Map<Integer, Product> products = new HashMap<>();
 
-    public void addProduct(Product product) {
+    public synchronized void addProduct(Product product) {
         products.put(product.getId(), product);
+    }
+
+    public synchronized void removeProduct(int id) {
+        products.remove(id);
+    }
+
+    public synchronized List<Product> listAllProducts() {
+        return new ArrayList<>(products.values());
     }
 
     public Product getProduct(int id) throws ProductNotFoundException {
@@ -19,8 +28,4 @@ public class Inventory {
         }
         return product;
     }
-
-    // See file: src/test/java/org/simplestore/model/InventoryTest.java
-    // TODO: Implement a method to list all products
-    // TODO: Implement a method to remove a product by id
 }

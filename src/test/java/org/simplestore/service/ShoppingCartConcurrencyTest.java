@@ -5,6 +5,10 @@ import org.simplestore.model.Inventory;
 import org.simplestore.model.Product;
 import org.simplestore.model.ProductNotFoundException;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,15 +20,16 @@ public class ShoppingCartConcurrencyTest {
         ShoppingCart shoppingCart = new ShoppingCart(inventory);
         inventory.addProduct(new Product(1, "Test Product", 10.0));
 
-        // Prepare tests with 10 threads. Next:
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 100; i++) {
+            executor.submit(() -> shoppingCart.addItem(1, 1));
+        }
+        for (int i = 0; i < 50; i++) {
+            executor.submit(() -> shoppingCart.removeItem(1, 1));
+        }
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(1, TimeUnit.MINUTES));
 
-        // TODO Add 100 items concurrently
-
-        // TODO Remove 50 items concurrently
-
-        // TODO Await for threads termination, eg. join
-
-        // Check if the final quantity is as expected
         assertEquals(50, shoppingCart.getItemQuantity(1));
     }
 
@@ -33,10 +38,13 @@ public class ShoppingCartConcurrencyTest {
         ShoppingCart shoppingCart = new ShoppingCart(inventory);
         inventory.addProduct(new Product(1, "Test Product", 10.0));
 
-        // TODO Add 100 items concurrently
-        // TODO Await for threads termination, eg. join
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 100; i++) {
+            executor.submit(() -> shoppingCart.addItem(1, 1));
+        }
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(1, TimeUnit.MINUTES));
 
-        // Check if the total cost calculation is correct
         assertEquals(1000.0, shoppingCart.calculateTotalCost());
     }
 

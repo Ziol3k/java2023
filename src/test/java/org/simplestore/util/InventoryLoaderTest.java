@@ -57,7 +57,6 @@ class InventoryLoaderTest {
         assertEquals("Another Product", product2.getName(), "Name of product 2 should be 'Another Product'");
         assertEquals(20.0, product2.getPrice(), "Price of product 2 should be 20.0");
     }
-
     @Test
     void loadInventory_WithInvalidData_ShouldHandleErrors() {
         // Write invalid data to the file
@@ -66,14 +65,13 @@ class InventoryLoaderTest {
         } catch (IOException e) {
             fail("Failed to write invalid data to temporary file");
         }
-
-        // Load the inventory from the temporary file
-        // TODO Should handle java.lang.NumberFormatException: For input string: "invalid data"
-        InventoryLoader.loadInventory(tempFilePath.toString(), inventory);
+        assertThrows(NumberFormatException.class, () -> InventoryLoader.loadInventory(tempFilePath.toString(), inventory));
 
         // The inventory should be empty as the data is invalid
-        assertThrows(Exception.class, () -> inventory.getProduct(1), "Should throw an exception as the product ID 1 does not exist");
+        assertThrows(ProductNotFoundException.class, () -> inventory.getProduct(1), "Should throw an exception as the product ID 1 does not exist");
+
     }
+
 
     // Note for presenter: Discuss the importance of testing file I/O operations and handling invalid data scenarios.
 }
