@@ -27,18 +27,23 @@ public class ProjectManager {
         Project project = findProjectByName(projectName);
         project.setDeadline(newDeadline);
 
-        for (Task task : project.getTasks()) {
-            if (task.getStatus().equals("Open")) {
-                task.setStatus("Updated due to deadline change");
+        long daysUntilDeadline = TimeUnit.DAYS.convert(newDeadline.getTime() - new Date().getTime(), TimeUnit.MILLISECONDS);
 
-                long daysUntilDeadline = TimeUnit.DAYS.convert(newDeadline.getTime()
-                        - new Date().getTime(), TimeUnit.MILLISECONDS);
-                if (daysUntilDeadline < 7) {
-                    task.setPriority(task.getPriority() + 1);
+        if (daysUntilDeadline < 0) {
+            System.out.println("Warning: The new deadline is in the past.");
+        } else {
+            for (Task task : project.getTasks()) {
+                if (task.getStatus().equals("Open")) {
+                    task.setStatus("Updated due to deadline change");
+
+                    if (daysUntilDeadline < 7) {
+                        task.setPriority(task.getPriority() + 1);
+                    }
                 }
             }
         }
     }
+
 
 
 
