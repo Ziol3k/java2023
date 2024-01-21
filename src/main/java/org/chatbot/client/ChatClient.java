@@ -1,28 +1,26 @@
 package org.chatbot.client;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ChatClient {
-    private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
-    private BufferedReader userInputReader;
+    private final Socket socket;
+    private final BufferedReader in;
+    private final PrintWriter out;
+    private final BufferedReader userInputReader;
 
     public ChatClient(String address, int port) throws Exception {
-        // TODO Zainicjuj połączenie z serwerem chatu
         socket = new Socket(address, port);
-        // ...
+
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
+        userInputReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    public void send(String message) {
-        out.println(message);
-    }
-
-    public String receive() throws Exception {
-        return in.readLine();
-    }
+    public void send(String message) { out.println(message); }
+    public String receive() throws Exception { return in.readLine(); }
 
     public void close() throws Exception {
         in.close();
@@ -35,12 +33,15 @@ public class ChatClient {
         ChatClient client = new ChatClient("localhost", 1234);
 
         System.out.println("Connected to chatbot. Type your messages:");
-        // TODO Zaimplementuj pętlę do komunikacji z serwerem
-        //  która wczytuje input z konsoli, przesyła do serwera i odbiera odpowiedź
+
         while (true) {
-            // String userInput = ...;
-            // ...
+            String userInput = client.userInputReader.readLine();
+            client.send(userInput);
             System.out.println("Chatbot says: " + client.receive());
+            if (userInput.equalsIgnoreCase("exit")) {
+                client.close();
+                break;
+            }
         }
     }
 }

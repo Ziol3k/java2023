@@ -8,12 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ChatbotLogic {
-    private IDatabaseConnection dbConnection;
+    private final IDatabaseConnection dbConnection;
     private boolean awaitingConfirmation;
     private int pendingReservationId;
     private boolean isFirstMessage = true;
 
-    // TODO: Inicjalizacja logiki chatbota z połączeniem do bazy danych
     public ChatbotLogic(IDatabaseConnection dbConnection) {
         this.dbConnection = dbConnection;
         this.awaitingConfirmation = false;
@@ -28,7 +27,6 @@ public class ChatbotLogic {
 
         try {
             if (input.equalsIgnoreCase(CommandConstants.RESERVE)) {
-                // Logika dodawania rezerwacji, symulowane, nie bierze pod uwagę rzeczywistych danych z wejścia
                 dbConnection.addReservation("Klient", "2023-01-01 19:00", 2);
                 return new Response(ResponseType.RESERVATION_SUCCESS, ResponseType.RESERVATION_SUCCESS.getMessage());
             }
@@ -36,13 +34,19 @@ public class ChatbotLogic {
             if (input.equalsIgnoreCase(CommandConstants.SHOW_RESERVATIONS)) {
                 ResultSet rs = dbConnection.listReservations();
                 StringBuilder sb = new StringBuilder(ResponseType.RESERVATION_LIST.getMessage() + "\n");
-                // TODO Logika wyświetlania rezerwacji
-                // ...
+
+                while (rs.next()) {
+                    sb.append("reservation_ID: ").append(rs.getInt("id"))
+                            .append(", Klient: ").append(rs.getString("customer_name"))
+                            .append(", Czas: ").append(rs.getString("reservation_time"))
+                            .append(", Liczba gości: ").append(rs.getInt("number_of_guests"))
+                            .append("\n");
+                }
                 rs.close();
                 return new Response(ResponseType.RESERVATION_LIST, sb.toString());
             }
 
-            // Potwierdzenie i anulowanie rezerwacji
+
             if (awaitingConfirmation) {
                 if (input.equalsIgnoreCase(CommandConstants.CONFIRM)) {
                     dbConnection.deleteReservation(pendingReservationId);
@@ -59,8 +63,9 @@ public class ChatbotLogic {
 
             if (input.startsWith(CommandConstants.DELETE_RESERVATION)) {
                 try {
-                    // TODO: Implementacja usuwania rezerwacji - przeparsuj reservationId z odpowiedzi klienta
-                    // int reservationId = ...;
+                    String reservationIdString = input.substring(CommandConstants.DELETE_RESERVATION.length());
+                    int reservationId = Integer.parseInt(reservationIdString.trim());
+
                     pendingReservationId = reservationId;
                     awaitingConfirmation = true;
                     return new Response(ResponseType.CONFIRMATION_REQUEST, ResponseType.CONFIRMATION_REQUEST.getMessage(reservationId));
@@ -73,7 +78,6 @@ public class ChatbotLogic {
             return new Response(ResponseType.ERROR, ResponseType.ERROR.getMessage(e.getMessage()));
         }
 
-        // Domyślna odpowiedź na nieznane komendy
         return new Response(ResponseType.INVALID_COMMAND, ResponseType.INVALID_COMMAND.getMessage());
     }
 
@@ -85,7 +89,6 @@ public class ChatbotLogic {
         }
     }
 
-    // Pomocnicza metoda do resetowania stanu potwierdzenia
     private void resetConfirmationState() {
         awaitingConfirmation = false;
         pendingReservationId = -1;
