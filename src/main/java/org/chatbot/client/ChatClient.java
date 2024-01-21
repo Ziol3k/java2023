@@ -30,7 +30,7 @@ public class ChatClient {
 
     public static void main(String[] args) throws Exception {
         ChatClient client = new ChatClient("localhost", 1234);
-
+        System.out.println("Chatbot says: " + client.receive());
         System.out.println("Connected to chatbot. Type your messages:");
         BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
 
