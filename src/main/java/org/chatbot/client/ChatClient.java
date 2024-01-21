@@ -13,9 +13,8 @@ public class ChatClient {
 
     public ChatClient(String address, int port) throws Exception {
         socket = new Socket(address, port);
-
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         userInputReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
@@ -33,15 +32,30 @@ public class ChatClient {
         ChatClient client = new ChatClient("localhost", 1234);
 
         System.out.println("Connected to chatbot. Type your messages:");
+        BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
 
-        while (true) {
-            String userInput = client.userInputReader.readLine();
-            client.send(userInput);
-            System.out.println("Chatbot says: " + client.receive());
-            if (userInput.equalsIgnoreCase("exit")) {
-                client.close();
-                break;
+        try {
+            String userInput;
+            while (true) {
+                System.out.print("You: ");
+                userInput = userInputReader.readLine();
+
+                if ("exit".equalsIgnoreCase(userInput)) {
+                    break;
+                }
+
+                client.send(userInput);
+                String response = client.receive();
+
+                if (response == null) {
+                    System.out.println("Connection closed by server.");
+                    break;
+                }
+                System.out.println("Chatbot says: " + response);
             }
+        } finally {
+            client.close();
         }
     }
+
 }

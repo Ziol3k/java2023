@@ -11,32 +11,28 @@ public class DatabaseConnection implements IDatabaseConnection {
 
     @Override
     public void addReservation(String customerName, String reservationTime, int numberOfGuests) throws SQLException {
-        String sql = "INSERT INTO RESERVATIONS (CUSTOMER_NAME, RESERVATION_TIME, NUMBER_OF_GUESTS) " + "VALUE (?, ?, ?)";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, customerName);
-            preparedStatement.setString(2, reservationTime);
-            preparedStatement.setInt(3, numberOfGuests);
-
-            preparedStatement.executeUpdate();
+        String sql = "INSERT INTO reservations (customer_name, reservation_time, number_of_guests) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customerName);
+            statement.setString(2, reservationTime);
+            statement.setInt(3, numberOfGuests);
+            statement.executeUpdate();
         }
     }
 
     @Override
     public void deleteReservation(int reservationId) throws SQLException {
-        String sql = "DELETE FROM RESERVATIONS WHERE ID = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setInt(1, reservationId);
-            preparedStatement.executeUpdate();
+        String sql = "DELETE FROM reservations WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, reservationId);
+            statement.executeUpdate();
         }
     }
 
     @Override
     public ResultSet listReservations() throws SQLException {
         String sql = "SELECT * FROM reservations";
-        Statement statement = connection.createStatement();
-        return statement.executeQuery(sql);
+        return connection.createStatement().executeQuery(sql);
     }
 
     public void closeConnection() {

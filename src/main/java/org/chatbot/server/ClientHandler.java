@@ -18,7 +18,7 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket) throws IOException, SQLException {
         this.clientSocket = socket;
-        this.chatbotLogic = new ChatbotLogic(new DatabaseConnection("jdbc:mysql://localhost:3306/chatbot_db", "root", "haslo"));
+        this.chatbotLogic = new ChatbotLogic(new DatabaseConnection("jdbc:mysql://localhost:3306/chatbot_db", "root", "QpmzwonX"));
     }
 
     @Override
@@ -26,8 +26,8 @@ public class ClientHandler implements Runnable {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
-            Response greeting = chatbotLogic.processInput("");
-            out.println(greeting.getMessage());
+            Response welcomeResponse = chatbotLogic.processInput("");
+            out.println(welcomeResponse.getMessage());
 
             String inputLine;
             while ((inputLine = in.readLine()) != null) {

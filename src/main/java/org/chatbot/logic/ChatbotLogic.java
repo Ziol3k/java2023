@@ -34,17 +34,17 @@ public class ChatbotLogic {
             if (input.equalsIgnoreCase(CommandConstants.SHOW_RESERVATIONS)) {
                 ResultSet rs = dbConnection.listReservations();
                 StringBuilder sb = new StringBuilder(ResponseType.RESERVATION_LIST.getMessage() + "\n");
-
                 while (rs.next()) {
-                    sb.append("reservation_ID: ").append(rs.getInt("id"))
+                    sb.append("ID: ").append(rs.getInt("id"))
                             .append(", Klient: ").append(rs.getString("customer_name"))
-                            .append(", Czas: ").append(rs.getString("reservation_time"))
-                            .append(", Liczba gości: ").append(rs.getInt("number_of_guests"))
+                            .append(", Data: ").append(rs.getString("reservation_time"))
+                            .append(", Goście: ").append(rs.getInt("number_of_guests"))
                             .append("\n");
                 }
                 rs.close();
                 return new Response(ResponseType.RESERVATION_LIST, sb.toString());
             }
+
 
 
             if (awaitingConfirmation) {
@@ -61,11 +61,9 @@ public class ChatbotLogic {
                 }
             }
 
-            if (input.startsWith(CommandConstants.DELETE_RESERVATION)) {
+            if (input.toLowerCase().startsWith(CommandConstants.DELETE_RESERVATION.toLowerCase())) {
                 try {
-                    String reservationIdString = input.substring(CommandConstants.DELETE_RESERVATION.length());
-                    int reservationId = Integer.parseInt(reservationIdString.trim());
-
+                    int reservationId = Integer.parseInt(input.substring(CommandConstants.DELETE_RESERVATION.length()).trim());
                     pendingReservationId = reservationId;
                     awaitingConfirmation = true;
                     return new Response(ResponseType.CONFIRMATION_REQUEST, ResponseType.CONFIRMATION_REQUEST.getMessage(reservationId));
@@ -73,6 +71,7 @@ public class ChatbotLogic {
                     return new Response(ResponseType.INVALID_RESERVATION_ID_FORMAT, ResponseType.INVALID_RESERVATION_ID_FORMAT.getMessage());
                 }
             }
+
 
         } catch (SQLException e) {
             return new Response(ResponseType.ERROR, ResponseType.ERROR.getMessage(e.getMessage()));
